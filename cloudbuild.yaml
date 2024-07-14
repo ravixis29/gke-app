@@ -25,7 +25,7 @@ steps:
   - '-c'
   - |
     set -x
-    gcloud container clusters get-credentials my-cluster --zone us-central1-a
+    gcloud container clusters get-credentials my-cluster --zone us-central1-a --quiet
   id: Authenticate
 
 # Step 5: Apply the Kubernetes deployment
