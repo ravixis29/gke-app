@@ -24,6 +24,7 @@ steps:
   args:
   - '-c'
   - |
+    set -x
     gcloud container clusters get-credentials my-cluster --zone us-central1-a
   id: Authenticate
 
