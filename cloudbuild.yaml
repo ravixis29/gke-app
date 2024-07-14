@@ -25,8 +25,10 @@ steps:
   - '-c'
   - |
     set -x
-    gcloud container clusters get-credentials my-cluster --zone us-central1-a --quiet
+    gcloud container clusters get-credentials my-cluster --zone us-central1-a 
   id: Authenticate
+  env:
+  - 'CLOUDSDK_GET_CREDENTIALS_OPTS=--quiet'
 
 # Step 5: Apply the Kubernetes deployment
 - name: 'gcr.io/cloud-builders/kubectl'
