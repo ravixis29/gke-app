@@ -16,7 +16,7 @@ spec:
       - name: gke-app
         image: gcr.io/$PROJECT_ID/gke-app:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 80
 ---
 
 apiVersion: v1
