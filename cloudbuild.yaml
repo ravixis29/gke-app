@@ -1,18 +1,26 @@
 steps:
-  # Step 1: Build the Docker image
+  # Step 1: Build the Docker image with the Git commit ID as the tag
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/qwiklabs-gcp-01-1cf185d065c9/my-app:latest', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/gke-app:$COMMIT_SHA', '.']
 
   # Step 2: Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/qwiklabs-gcp-01-1cf185d065c9/my-app:latest']
+    args: ['push', 'gcr.io/$PROJECT_ID/gke-app:$COMMIT_SHA']
 
-  # Step 3: Deploy the image to GKE
+  # Step 3: Deploy the image to GKE using the commit ID tag
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['apply', '-f', 'deployment.yaml']
+    args: ['set', 'image', 'deployment/gke-app', 'gke-app=gcr.io/$PROJECT_ID/gke-app:$COMMIT_SHA']
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=asia-south1'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
+      - 'CLOUDSDK_COMPUTE_ZONE=$_COMPUTE_ZONE'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
+
+  # Step 4: Log the deployment result to Cloud Logging
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud logging write deployment_logs "Deployed my-app with image gcr.io/$PROJECT_ID/my-app:$COMMIT_SHA to GKE cluster $_CLUSTER_NAME in zone $_COMPUTE_ZONE" --severity=INFO
 
 # Optional: Substitutions for dynamic variables
 substitutions:
@@ -22,8 +30,9 @@ substitutions:
 # Optional: Timeout for the build
 timeout: '600s'
 
+# Use CLOUD_LOGGING_ONLY to avoid specifying a logs bucket
 options:
   logging: CLOUD_LOGGING_ONLY
 
 images:
-  - 'gcr.io/qwiklabs-gcp-01-1cf185d065c9/my-app:latest'
+  - 'gcr.io/$PROJECT_ID/my-app:$COMMIT_SHA'
