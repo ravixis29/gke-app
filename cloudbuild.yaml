@@ -1,11 +1,11 @@
 steps:
   # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/my-app:latest', '.']
+    args: ['build', '-t', 'gcr.io/qwiklabs-gcp-01-1cf185d065c9/my-app:latest', '.']
 
   # Step 2: Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/my-app:latest']
+    args: ['push', 'gcr.io/qwiklabs-gcp-01-1cf185d065c9/my-app:latest']
 
   # Step 3: Deploy the image to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -26,4 +26,4 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 images:
-  - 'gcr.io/$PROJECT_ID/my-app:latest'
+  - 'gcr.io/qwiklabs-gcp-01-1cf185d065c9/my-app:latest'
