@@ -7,20 +7,30 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/gke-app:$COMMIT_SHA']
 
-  # Step 3: Deploy the image to GKE using the commit ID tag
+  # Step 3: Apply the deployment.yaml to create or update the deployment
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - 'deployment.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=$_COMPUTE_ZONE'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
+
+  # Step 4: Update the deployment image in GKE using the commit ID tag
   - name: 'gcr.io/cloud-builders/kubectl'
     args: ['set', 'image', 'deployment/gke-app', 'gke-app=gcr.io/$PROJECT_ID/gke-app:$COMMIT_SHA']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=$_COMPUTE_ZONE'
       - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
 
-  # Step 4: Log the deployment result to Cloud Logging
+  # Step 5: Log the deployment result to Cloud Logging
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        gcloud logging write deployment_logs "Deployed my-app with image gcr.io/$PROJECT_ID/my-app:$COMMIT_SHA to GKE cluster $_CLUSTER_NAME in zone $_COMPUTE_ZONE" --severity=INFO
+        gcloud logging write deployment_logs "Deployed gke-app with image gcr.io/$PROJECT_ID/gke-app:$COMMIT_SHA to GKE cluster $_CLUSTER_NAME in zone $_COMPUTE_ZONE" --severity=INFO
 
 # Optional: Substitutions for dynamic variables
 substitutions:
