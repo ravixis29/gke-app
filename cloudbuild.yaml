@@ -17,7 +17,7 @@ steps:
 # Optional: Substitutions for dynamic variables
 substitutions:
   _CLUSTER_NAME: 'my-cluster'
-  _COMPUTE_ZONE: 'us-central1-a'
+  _COMPUTE_ZONE: 'asia-south1'
 
 # Optional: Timeout for the build
 timeout: '600s'
