@@ -14,7 +14,7 @@ steps:
   args: ['version']
   id: Setup
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_COMPUTE_ZONE=asia-south1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
   - 'KUBECONFIG=/workspace/.kube/config'
 
